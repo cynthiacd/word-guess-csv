@@ -1,17 +1,48 @@
+require 'csv'
 class WordGuess
   def initialize(debug = false)
     # are we in debug mode?
     @debug = debug
 
-    # possible words, selected at random
-    @words = {
-      "e" => %w(dog cat bug hat cap lit kin fan fin fun tan ten tin ton),
-      "m" => %w(plain claim brine crime alive bride skine drive slime stein jumpy),
-      "h" => %w(
-          machiavellian prestidigitation plenipotentiary quattuordecillion
-          magnanimous unencumbered bioluminescent circumlocution
-        )
-    }
+    # possible words, selected at random - NEED TO CHANGE THIS SO YOU READ IN THE WORDS
+    # FROM THE CSV file
+    # @words = {
+    #   "e" => %w(dog cat bug hat cap lit kin fan fin fun tan ten tin ton),
+    #   "m" => %w(plain claim brine crime alive bride skine drive slime stein jumpy),
+    #   "h" => %w(
+    #       machiavellian prestidigitation plenipotentiary quattuordecillion
+    #       magnanimous unencumbered bioluminescent circumlocution
+    #     )
+    # }
+
+    # natalie's way
+    @words =  {}
+    CSV.read("words2.csv").each { |line| @words[line.first] = line[1..-1] }
+    # @words.each_key { |key| puts key }
+
+    # words_array_includes_headers = CSV.read("words2.csv")
+    # # this will remove the first item in each array
+    # @words = {
+    #          "e" => words_array_includes_headers[1][1..-1],
+    #          "m" => words_array_includes_headers[0][1..-1],
+    #          "h" => words_array_includes_headers[2][1..-1]
+    #          }
+
+    # here are your methods where you added extra lines in the csv file
+    # is it better to read file once and save to variable - then use index of variable
+    # words_array = CSV.read("words.csv")#
+    # @words = {
+    #          "e" => words_array[3],
+    #          "m" => words_array[1],
+    #          "h" => words_array[5]
+    #          }
+
+     # this looks nice but might
+    #  @words = {
+    #           "e" => CSV.read("words.csv")[3],
+    #           "m" => CSV.read("words.csv")[1],
+    #           "h" => CSV.read("words.csv")[5]
+    #           }
 
     # players attempts allowed by difficulty
     @tries = {
@@ -20,7 +51,7 @@ class WordGuess
       "h" => 4
     }
 
-    # ask the user to set the game mode
+    # # ask the user to set the game mode
     mode = set_mode
 
     @word    = @words[mode].sample # chosen word; players try to guess this
@@ -28,11 +59,11 @@ class WordGuess
     @user_word = "•" * @word.length # a "blank word" for user output
     @guessed = [] # keep track of letters that have been guessed
 
-    # debugging?
+    # # debugging?
     if @debug
       puts "Your word is #{ @word }."
     end
-
+    #
     # user messages
     puts "You have #{ @guesses } guesses."
     puts "Guess the word: #{ @user_word }"
@@ -131,4 +162,4 @@ class WordGuess
   end
 end
 
-WordGuess.new
+WordGuess.new(true)
